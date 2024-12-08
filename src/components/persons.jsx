@@ -10,10 +10,10 @@ const Contact = ({ person, deleteContact }) => {
 const Persons = ({ persons, contactService, setPersons }) => {
   const deleteContact = contact => {
     if (window.confirm(`Delete ${contact.name}? `)) {
-      console.log(`deleting note id: ${contact.id}`);
-      contactService.remove(contact.id).then(deletionResponse => {
+      console.log(`deleting note id: ${contact._id}`);
+      contactService.remove(contact._id).then(deletionResponse => {
         const personsUpdate = persons.filter(
-          person => person.id !== contact.id
+          person => person._id !== contact._id
         );
         setPersons(personsUpdate);
       });

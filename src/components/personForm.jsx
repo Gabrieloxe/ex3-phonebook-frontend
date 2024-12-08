@@ -14,23 +14,23 @@ const PersonForm = ({ persons, setPersons, contactService, notify }) => {
     });
   };
 
-  const updateContact = (contact, id) => {
+  const updateContact = (contact, _id) => {
     if (
       window.confirm(
         `${form.name} is already added to phonebook replace the old number with a new one?`
       )
     ) {
       contactService
-        .update(contact, id)
+        .update(contact, _id)
         .then(updateResponse => {
           const personsUpdate = persons.map(person =>
-            person.id !== updateResponse.id ? person : updateResponse
+            person._id !== updateResponse._id ? person : updateResponse
           );
           setPersons(personsUpdate);
           notify(`${contact.name} has been updated`);
         })
         .catch(error => {
-          setPersons(persons.filter(person => person.id !== id));
+          setPersons(persons.filter(person => person._id !== _id));
           notify(
             `Contact '${contact.name}' was already removed from server`,
             'error'
@@ -51,7 +51,7 @@ const PersonForm = ({ persons, setPersons, contactService, notify }) => {
     if (names.includes(form.name)) {
       const toBeUpdated = persons.find(person => person.name === form.name);
       toBeUpdated.number = form.number;
-      updateContact(toBeUpdated, toBeUpdated.id);
+      updateContact(toBeUpdated, toBeUpdated._id);
     } else {
       addContact();
     }

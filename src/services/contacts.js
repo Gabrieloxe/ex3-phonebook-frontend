@@ -12,13 +12,13 @@ const create = (contact) =>{
     return request.then(response => response.data);
 }
 
-const update = (contact, id) =>{
-    const request = axios.put( `${baseURL}/${id}` , contact)
+const update = (contact, _id) =>{
+    const request = axios.put( `${baseURL}/${_id}` , contact)
     return request.then(response => response.data);
 }
 
-const remove = (id) =>{
-    const request = axios.delete( `${baseURL}/${id}`)
+const remove = (_id) =>{
+    const request = axios.delete( `${baseURL}/${_id}`)
     return request.then(response => response.data);
 }
 
