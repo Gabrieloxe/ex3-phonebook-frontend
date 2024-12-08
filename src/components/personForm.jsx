@@ -8,10 +8,15 @@ const PersonForm = ({ persons, setPersons, contactService, notify }) => {
       name: form.name,
       number: form.number,
     };
-    contactService.create(contact).then(returnedContact => {
-      setPersons(persons.concat(returnedContact));
-      notify(`${contact.name} has been added`);
-    });
+    contactService
+      .create(contact)
+      .then(returnedContact => {
+        setPersons(persons.concat(returnedContact));
+        notify(`${contact.name} has been added`);
+      })
+      .catch(error => {
+        notify(error?.response.data.error, 'error');
+      });
   };
 
   const updateContact = (contact, _id) => {

@@ -1,32 +1,31 @@
 import axios from 'axios';
-const baseURL = '/api/persons'
+const baseURL = '/api/persons';
 
+const getAll = async () => {
+  const response = await axios.get(baseURL);
+  return response.data;
+};
 
-const getAll = () =>{
-    const request = axios.get(baseURL);
-    return request.then(response => response.data);
-}
+const create = async contact => {
+  const response = await axios.post(baseURL, contact);
+  return response.data;
+};
 
-const create = (contact) =>{
-    const request = axios.post(baseURL,contact);
-    return request.then(response => response.data);
-}
+const update = async (contact, _id) => {
+  const response = await axios.put(`${baseURL}/${_id}`, contact);
+  return response.data;
+};
 
-const update = (contact, _id) =>{
-    const request = axios.put( `${baseURL}/${_id}` , contact)
-    return request.then(response => response.data);
-}
-
-const remove = (_id) =>{
-    const request = axios.delete( `${baseURL}/${_id}`)
-    return request.then(response => response.data);
-}
+const remove = async _id => {
+  const response = await axios.delete(`${baseURL}/${_id}`);
+  return response.data;
+};
 
 const contactService = {
-    getAll,
-    create,
-    update,
-    remove
-}
+  getAll,
+  create,
+  update,
+  remove,
+};
 
 export default contactService;
