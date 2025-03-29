@@ -1,11 +1,13 @@
+import { Input } from 'antd';
+
 const Filter = ({ filterValue, handleFilterChange }) => {
   return (
-    <div className="filter-container">
-      <label className="filter-label">Filter</label>
-      <input
-        className="filter-input"
+    <div className='filter-container'>
+      <Input
+        placeholder='Filter contacts'
         value={filterValue}
         onChange={handleFilterChange}
+        allowClear
       />
     </div>
   );

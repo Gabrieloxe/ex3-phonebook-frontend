@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
+import { Form, Input, Button } from 'antd';
 
 const PersonForm = ({ persons, setPersons, contactService, notify }) => {
-  const [form, setForm] = useState({ name: null, number: null });
+  const [form] = Form.useForm();
 
-  const addContact = () => {
+  const addContact = values => {
     const contact = {
-      name: form.name,
-      number: form.number,
+      name: values.name,
+      number: values.number,
     };
     contactService
       .create(contact)
       .then(returnedContact => {
         setPersons(persons.concat(returnedContact));
         notify(`${contact.name} has been added`);
+        form.resetFields();
       })
       .catch(error => {
         notify(error?.response.data.error, 'error');
@@ -22,7 +24,7 @@ const PersonForm = ({ persons, setPersons, contactService, notify }) => {
   const updateContact = (contact, _id) => {
     if (
       window.confirm(
-        `${form.name} is already added to phonebook replace the old number with a new one?`
+        `${contact.name} is already added to phonebook. Replace the old number with a new one?`
       )
     ) {
       contactService
@@ -33,6 +35,7 @@ const PersonForm = ({ persons, setPersons, contactService, notify }) => {
           );
           setPersons(personsUpdate);
           notify(`${contact.name} has been updated`);
+          form.resetFields();
         })
         .catch(error => {
           setPersons(persons.filter(person => person._id !== _id));
@@ -44,54 +47,44 @@ const PersonForm = ({ persons, setPersons, contactService, notify }) => {
     }
   };
 
-  const handleFormChange = event => {
-    const value = event.target.value;
-    const name = event.target.name;
-    setForm({ ...form, [name]: value });
-  };
-
-  const handleFormSubmit = event => {
-    event.preventDefault();
+  const handleFormSubmit = values => {
     const names = persons.map(person => person.name);
-    if (names.includes(form.name)) {
-      const toBeUpdated = persons.find(person => person.name === form.name);
-      toBeUpdated.number = form.number;
+    if (names.includes(values.name)) {
+      const toBeUpdated = persons.find(person => person.name === values.name);
+      toBeUpdated.number = values.number;
       updateContact(toBeUpdated, toBeUpdated._id);
     } else {
-      addContact();
+      addContact(values);
     }
   };
 
-  useEffect(() => {
-    setForm({ name: '', number: '' });
-  }, [persons]);
-
   return (
-    <form onSubmit={handleFormSubmit} className='form-container'>
-      <div>
-        <label className='form-label'>Name:</label>
-        <input
-          name='name'
-          value={form.name}
-          onChange={handleFormChange}
-          className='form-input'
-        />
-      </div>
-      <div>
-        <label className='form-label'>Number:</label>
-        <input
-          name='number'
-          value={form.number}
-          onChange={handleFormChange}
-          className='form-input'
-        />
-      </div>
-      <div>
-        <button type='submit' className='form-button'>
-          add
-        </button>
-      </div>
-    </form>
+    <Form
+      form={form}
+      onFinish={handleFormSubmit}
+      layout='vertical'
+      className='form-container'
+    >
+      <Form.Item
+        label='Name'
+        name='name'
+        rules={[{ required: true, message: 'Please input the name!' }]}
+      >
+        <Input placeholder='Enter name' />
+      </Form.Item>
+      <Form.Item
+        label='Number'
+        name='number'
+        rules={[{ required: true, message: 'Please input the number!' }]}
+      >
+        <Input placeholder='Enter number' />
+      </Form.Item>
+      <Form.Item>
+        <Button type='primary' htmlType='submit'>
+          Add
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 
